@@ -13,20 +13,16 @@
         height: 100vh;
     }
 
-    .sidebar{
-        color: floralwhite;
-    }
-     
-    .sidebar ul{
-      list-style: none;
-    }
-
-    .sidebar li {
-      padding: 20px;
-    }
 
   .sidebar a {
     color: #ffffff;
+    text-decoration: none;
+    display: block;
+    padding: 25px 10px;
+  }
+
+  .sidebar a:hover{
+    background: black;
   }
 
 
@@ -48,22 +44,21 @@
           </nav>
 
           <div class="body-content h-100">
-            <div class="row h-100">
-                <div class="sidebar sidebar-dark bg-dark bg-gradient col-2 ">
-                    <ul>
+            <div class="row g-0 h-100">
+                <div class="sidebar sidebar-dark bg-dark bg-gradient col-lg-2 ">
                       @if (Auth::user()->role_id == 1)
-                      <li>Dashboard</li>
-                      <li>Pengajuan</li>
-                      <li>About</li>
-                      <li>logout</li>
+                      <a href="dashboard">Dashboard</a>
+                      <a href="pengajuanmasuk">Pengajuan Masuk</a>
+                      <a href="pengajuankeluar">Pengajuan Keluar</a>
+                      <a href="">About</a>
+                      <a href="logout">Logout</a>
                       @else
-                      <li>profile</li>
-                      <li>Pengajuan</li>
-                      <li>Logout</li>
+                      <a href="">Profile</a>
+                      <a href="">PengajuanAsuransi</a>
+                      <a href="">Logout</a>
                       @endif
-                    </ul>
                 </div>
-                <div class="content p-5 col-10">
+                <div class="content p-5 col-lg-10">
                     @yield('content')
                 </div>
             </div>
