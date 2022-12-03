@@ -8,12 +8,9 @@ class PengajuanAsuransiController extends Controller
 {
     public function indexin()
     {
-        return view('pengajuanmasuk');
+        return view('pengajuan');
     }
 
-    public function indexout()
-    {
-        return view('pengajuankeluar');
-    }
+
     
 }

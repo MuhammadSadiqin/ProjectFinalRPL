@@ -27,18 +27,18 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
         if(Auth::attempt($credentials)){
-            return redirect('dashboard');
-        };
-        
-
-        $request->session()->regenerate();
+            $request->session()->regenerate();
             if(Auth::user()->role_id == 1){
                 return redirect('dashboard');
             }
 
             if(Auth::user()->role_id == 2){
-                return redirect('profile');
+                return redirect('pengajuan');
             }
+        };
+        
+
+       
         // if (Auth::attempt($credentials)) {
         //     // cek apakah user status = active
         //     if(Auth::user()->status != 'active'){

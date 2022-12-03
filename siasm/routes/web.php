@@ -35,7 +35,6 @@ Route::middleware('auth')->group(function(){
     Route::get('logout',[AuthController::class,'logout']);
     Route::get('dashboard',[DashboardController::class,'index'])->middleware(['auth','only_admin']);
     Route::get('profile',[UserController::class,'profile']);
+    Route::get('mahasiswa',[UserController::class,'mahasiswa']);
     Route::get('pengajuan',[PengajuanAsuransiController::class,'indexin']);
-    Route::get('pengajuan',[PengajuanAsuransiController::class,'indexout']);
-    
 });
