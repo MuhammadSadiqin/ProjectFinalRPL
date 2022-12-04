@@ -15,9 +15,14 @@ return new class extends Migration
     {
         Schema::create('pengajuan_asuransis', function (Blueprint $table) {
             $table->id();
-            $table->string('kluster_asuransi');
-            $table->string('status')->default('belum diproses');
-            $table->string('file_pengajuan');
+            $table->string('kategori');
+            $table->string('dokumen_asyki');
+            $table->string('dokumen_tagihanrs');
+            $table->string('kartu_asuransi_pnl');
+            $table->string('resume_medis');
+            $table->string('hasil_lab');
+            $table->string('surat_keterangan_meninggal');
+            $table->string('status')->default('sedang diproses');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

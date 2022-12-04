@@ -2,6 +2,7 @@
 
 use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
@@ -37,4 +38,7 @@ Route::middleware('auth')->group(function(){
     Route::get('profile',[UserController::class,'profile']);
     Route::get('mahasiswa',[UserController::class,'mahasiswa']);
     Route::get('pengajuan',[PengajuanAsuransiController::class,'indexin']);
+    Route::get('pengajuan/download/{file}',[PengajuanAsuransiController::class,'download']);
+    Route::post('pengajuan/store',[PengajuanAsuransiController::class,'store']);
+    
 });
