@@ -66,27 +66,27 @@
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Dokumen ASYKI</label>
                                 <input class="form-control" name="dokumen_asyki" type="file" id="dokumen_asyki"
-                                    accept="application/pdf" required>
+                                    accept="application/pdf" >
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Dokumen Tagihan Rumah Sakit</label>
                                 <input class="form-control" name="dokumen_tagihanrs" type="file" id="dokumen_tagihanrs"
-                                    accept="application/pdf" required>
+                                    accept="application/pdf" >
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Kartu Asuransi PNL</label>
                                 <input class="form-control" name="kartu_asuransi_pnl" type="file" id="kartu_asuransi_pnl"
-                                    accept="application/pdf" required>
+                                    accept="application/pdf" >
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Resume Medis</label>
                                 <input class="form-control" name="resume_medis" type="file" id="resume_medis"
-                                    accept="application/pdf" required>
+                                    accept="application/pdf" >
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Hasil Lab</label>
                                 <input class="form-control" name="hasil_lab" type="file" id="hasil_lab"
-                                    accept="application/pdf" required>
+                                    accept="application/pdf" >
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Surat Keterangan Meninggal</label>
@@ -114,6 +114,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Nama</th>
                                 <th>Kategori</th>
                                 <th>Dokumen Asyki</th>
                                 <th>Dokumen Tagihan Rumah Sakit</th>
@@ -122,12 +123,14 @@
                                 <th>Hasil Lab</th>
                                 <th>Surat Keterangan Meninggal</th>
                                 <th>Status</th>
+                                <th>Dokumen Status</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>No</th>
+                                <th>Nama</th>
                                 <th>Kategori</th>
                                 <th>Dokumen Asyki</th>
                                 <th>Dokumen Tagihan Rumah Sakit</th>
@@ -136,6 +139,7 @@
                                 <th>Hasil Lab</th>
                                 <th>Surat Keterangan Meninggal</th>
                                 <th>Status</th>
+                                <th>Dokumen Status</th>
                                 <th>Aksi</th>
 
                             </tr>
@@ -143,24 +147,259 @@
                         <tbody>
                             @foreach ($Pengajuan as $p)
                                 <tr>
+
                                     <td>{{ $p->id }}</td>
+                                    <td>{{ $p->nim . '-' . $p->nama . ' ' . $p->prodi . '-' . $p->jurusan }}</td>
                                     <td>{{ $p->kategori }}</td>
                                     <td>
-                                        <a target="_blank" href="{{ asset("storage/files/dok_asyki/$p->dokumen_asyki") }}">{{$p->dokumen_asyki}}</a>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/dok_asyki/$p->dokumen_asyki") }}">{{ $p->dokumen_asyki }}</a>
                                     </td>
-                                    <td>{{ $p->dokumen_tagihanrs }}</td>
+                                    <td>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/dok_tagihanrs/$p->dokumen_tagihanrs") }}">{{ $p->dokumen_tagihanrs }}</a>
+                                    </td>
+                                    <td>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/kartu_asuransi_pnl/$p->kartu_asuransi_pnl") }}">{{ $p->kartu_asuransi_pnl }}</a>
+                                    </td>
+                                    <td>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/resume_medis/$p->resume_medis") }}">{{ $p->resume_medis }}</a>
+                                    </td>
+                                    <td>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/hasil_lab/$p->hasil_lab") }}">{{ $p->hasil_lab }}</a>
+                                    </td>
+                                    <td>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/surat_keterangan_meninggal/$p->surat_keterangan_meninggal") }}">{{ $p->surat_keterangan_meninggal }}</a>
+                                    </td>
+                                    {{-- <td>{{ $p->dokumen_tagihanrs }}</td>
                                     <td>{{ $p->kartu_asuransi_pnl }}</td>
                                     <td>{{ $p->resume_medis }}</td>
                                     <td>{{ $p->hasil_lab }}</td>
-                                    <td>{{ $p->surat_keterangan_meninggal }}</td>
+                                    <td>{{ $p->surat_keterangan_meninggal }}</td> --}}
                                     <td>{{ $p->status }}</td>
                                     <td>
-                                        <button class="btn btn-secondary  dropdown-item">
-                                            <span class="text">Edit</span>
+                                        <a target="_blank"
+                                            href="{{ asset("storage/files/dok_status/$p->dokumen_status") }}">{{ $p->dokumen_status }}</a>
+                                    </td>
+
+                                    <td>
+                                        @if (Auth::user()->role_id == 1)
+                                            <button class="btn btn-primary mb-2 mt-2" data-toggle="modal"
+                                                data-target="#diterima{{ $p->id }}">
+                                                Diterima
+                                            </button>
+                                            <button class="btn btn-primary mb-2 mt-2" href="logout" data-toggle="modal"
+                                                data-target="#ditolak{{ $p->id }}">
+                                                Ditolak
+                                            </button>
+                                        @endif
+
+                                        <div class="modal fade" id="diterima{{ $p->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Dokumen</h5>
+                                                        <button class="close" type="button" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ URL::to('pengajuan/diterima') }}" method="POST"
+                                                            enctype='multipart/form-data'>
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $p->id }}">
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Dokumen
+                                                                    Diterima</label>
+                                                                <input class="form-control"
+                                                                    name="surat_keterangan_diterima" type="file"
+                                                                    id="surat_keterangan_diterima"
+                                                                    accept="application/pdf" required>
+                                                            </div>
+                                                            <input type="submit" class="btn btn-primary" id="submit"
+                                                                value="Submit">
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" type="button"
+                                                            data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" id="ditolak{{ $p->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Dokumen</h5>
+                                                        <button class="close" type="button" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ URL::to('pengajuan/ditolak') }}" method="POST"
+                                                            enctype='multipart/form-data'>
+                                                            @csrf
+                                                            <input type="hidden" name="id"
+                                                                value="{{ $p->id }}">
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Dokumen
+                                                                    Ditolak</label>
+                                                                <input class="form-control"
+                                                                    name="surat_keterangan_ditolak" type="file"
+                                                                    id="surat_keterangan_ditolak" accept="application/pdf"
+                                                                    required>
+                                                            </div>
+                                                            <input type="submit" class="btn btn-primary" id="submit"
+                                                                value="Submit">
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" type="button"
+                                                            data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-primary mb-2 mt-2"  data-toggle="modal"
+                                            data-target="#edit{{$p->id}}">
+                                            Edit
                                         </button>
-                                        <button class="btn btn-secondary  dropdown-item">
-                                            <span class="text">Delete</span>
+                                        <div class="modal fade" id="edit{{$p->id}}" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?
+                                                        </h5>
+                                                        <button class="close" type="button" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ URL::to('pengajuan/edit') }}" method="POST"
+                                                            enctype='multipart/form-data'>
+                                                            @csrf
+                                                            <input type="hidden" id="id" name="id" value="{{$p->id}}">
+                                                            <div class="mb-2">
+                                                                <select class="form-select form-select-lg mb-3"
+                                                                    aria-label=".form-select-lg example" name="kategori"
+                                                                    id="kategori">
+                                                                    <option selected>Kategori</option>
+                                                                    <option value="Rawat Inap(sakit)">Rawat inap(sakit)
+                                                                    </option>
+                                                                    <option value="Rawat jalan-Kecelakaan">Rawat
+                                                                        jalan-Kecelakaan</option>
+                                                                    <option value="Rawat inap-kecelakaan">Rawat
+                                                                        inap-Kecelakaan</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Dokumen
+                                                                    ASYKI</label>
+                                                                <input class="form-control" name="dokumen_asyki"
+                                                                    type="file" id="dokumen_asyki"
+                                                                    accept="application/pdf"
+                                                                    value="{{ asset("storage/files/dok_asyki/$p->dokumen_asyki") }}" >
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Dokumen Tagihan
+                                                                    Rumah Sakit</label>
+                                                                <input class="form-control" name="dokumen_tagihanrs"
+                                                                    type="file" id="dokumen_tagihanrs"
+                                                                    accept="application/pdf"
+                                                                    value="{{ asset("storage/files/dok_tagihanrs/$p->dokumen_tagihanrs") }}" >
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Kartu Asuransi
+                                                                    PNL</label>
+                                                                <input class="form-control" name="kartu_asuransi_pnl"
+                                                                    type="file" id="kartu_asuransi_pnl"
+                                                                    accept="application/pdf" 
+                                                                    value="{{ asset("storage/files/kartu_asuransi_pnl/$p->kartu_asuransi_pnl") }}">
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Resume
+                                                                    Medis</label>
+                                                                <input class="form-control" name="resume_medis"
+                                                                    type="file" id="resume_medis"
+                                                                    accept="application/pdf" 
+                                                                    value="{{ asset("storage/files/resume_medis/$p->resume_medis") }}">
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Hasil Lab</label>
+                                                                <input class="form-control" name="hasil_lab"
+                                                                    type="file" id="hasil_lab"
+                                                                    accept="application/pdf" 
+                                                                    value="{{ asset("storage/files/hasil_lab/$p->hasil_lab") }}">
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Surat Keterangan
+                                                                    Meninggal</label>
+                                                                <input class="form-control"
+                                                                    name="surat_keterangan_meninggal" type="file"
+                                                                    id="surat_keterangan_meninggal"
+                                                                    accept="application/pdf"
+                                                                    value="{{ asset("storage/files/surat_keterangan_meninggal/$p->surat_keterangan_meninggal") }}">
+                                                            </div>
+                                                            <input type="submit" class="btn btn-primary" id="submit"
+                                                                value="Submit">
+                                                            <p style="color: red">Cuma Nerima PDF PAK!!</p>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" type="button"
+                                                            data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-primary mb-2 mt-2"  data-toggle="modal"
+                                            data-target="#delete{{$p->id}}">
+                                            Delete
                                         </button>
+                                        <div class="modal fade" id="delete{{$p->id}}" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Apakah anda yakin menghapus data ini!!
+                                                        </h5>
+                                                        <button class="close" type="button" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ URL::to('pengajuan/delete') }}" method="POST"
+                                                            enctype='multipart/form-data'>
+                                                            @csrf
+                                                            <input type="hidden" id="id" name="id" value="{{$p->id}}">
+                                                            <input type="submit" class="btn btn-primary" id="submit"
+                                                                value="Submit">
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button class="btn btn-secondary" type="button"
+                                                            data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </td>
 
                                 </tr>

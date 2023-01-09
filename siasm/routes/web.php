@@ -40,5 +40,10 @@ Route::middleware('auth')->group(function(){
     Route::get('pengajuan',[PengajuanAsuransiController::class,'indexin']);
     Route::get('pengajuan/download/{file}',[PengajuanAsuransiController::class,'download']);
     Route::post('pengajuan/store',[PengajuanAsuransiController::class,'store']);
+    Route::post('pengajuan/ditolak',[PengajuanAsuransiController::class,'ditolak']);
+    Route::post('pengajuan/diterima',[PengajuanAsuransiController::class,'diterima']);
+    Route::post('pengajuan/edit',[PengajuanAsuransiController::class,'edit']);
+    Route::post('pengajuan/delete',[PengajuanAsuransiController::class,'delete']);
+    
     
 });
