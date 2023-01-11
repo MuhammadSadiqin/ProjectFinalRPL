@@ -66,27 +66,27 @@
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Dokumen ASYKI</label>
                                 <input class="form-control" name="dokumen_asyki" type="file" id="dokumen_asyki"
-                                    accept="application/pdf" >
+                                    accept="application/pdf">
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Dokumen Tagihan Rumah Sakit</label>
                                 <input class="form-control" name="dokumen_tagihanrs" type="file" id="dokumen_tagihanrs"
-                                    accept="application/pdf" >
+                                    accept="application/pdf">
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Kartu Asuransi PNL</label>
                                 <input class="form-control" name="kartu_asuransi_pnl" type="file" id="kartu_asuransi_pnl"
-                                    accept="application/pdf" >
+                                    accept="application/pdf">
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Resume Medis</label>
                                 <input class="form-control" name="resume_medis" type="file" id="resume_medis"
-                                    accept="application/pdf" >
+                                    accept="application/pdf">
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Hasil Lab</label>
                                 <input class="form-control" name="hasil_lab" type="file" id="hasil_lab"
-                                    accept="application/pdf" >
+                                    accept="application/pdf">
                             </div>
                             <div class="mb-2">
                                 <label for="formFile" class="form-label">Surat Keterangan Meninggal</label>
@@ -114,6 +114,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Tanggal Pengajuan</th>
                                 <th>Nama</th>
                                 <th>Kategori</th>
                                 <th>Dokumen Asyki</th>
@@ -124,12 +125,14 @@
                                 <th>Surat Keterangan Meninggal</th>
                                 <th>Status</th>
                                 <th>Dokumen Status</th>
+                                <th>Nominal</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>No</th>
+                                <th>Tanggal pengajuan</th>
                                 <th>Nama</th>
                                 <th>Kategori</th>
                                 <th>Dokumen Asyki</th>
@@ -140,6 +143,7 @@
                                 <th>Surat Keterangan Meninggal</th>
                                 <th>Status</th>
                                 <th>Dokumen Status</th>
+                                <th>Nominal</th>
                                 <th>Aksi</th>
 
                             </tr>
@@ -149,6 +153,7 @@
                                 <tr>
 
                                     <td>{{ $p->id }}</td>
+                                    <td>{{ $p->created_at }}</td>
                                     <td>{{ $p->nim . '-' . $p->nama . ' ' . $p->prodi . '-' . $p->jurusan }}</td>
                                     <td>{{ $p->kategori }}</td>
                                     <td>
@@ -175,16 +180,12 @@
                                         <a target="_blank"
                                             href="{{ asset("storage/files/surat_keterangan_meninggal/$p->surat_keterangan_meninggal") }}">{{ $p->surat_keterangan_meninggal }}</a>
                                     </td>
-                                    {{-- <td>{{ $p->dokumen_tagihanrs }}</td>
-                                    <td>{{ $p->kartu_asuransi_pnl }}</td>
-                                    <td>{{ $p->resume_medis }}</td>
-                                    <td>{{ $p->hasil_lab }}</td>
-                                    <td>{{ $p->surat_keterangan_meninggal }}</td> --}}
                                     <td>{{ $p->status }}</td>
                                     <td>
                                         <a target="_blank"
                                             href="{{ asset("storage/files/dok_status/$p->dokumen_status") }}">{{ $p->dokumen_status }}</a>
                                     </td>
+                                    <td>{{ $p->nominal }}</td>
 
                                     <td>
                                         @if (Auth::user()->role_id == 1)
@@ -213,6 +214,12 @@
                                                         <form action="{{ URL::to('pengajuan/diterima') }}" method="POST"
                                                             enctype='multipart/form-data'>
                                                             @csrf
+                                                            <div class="mb-2">
+                                                                <label for="formFile" class="form-label">Nominal
+                                                                    </label>
+                                                                <input class="form-control" name="nominal" type="text"
+                                                                    required>
+                                                            </div>
                                                             <input type="hidden" name="id"
                                                                 value="{{ $p->id }}">
                                                             <div class="mb-2">
@@ -272,12 +279,12 @@
                                             </div>
                                         </div>
 
-                                        <button class="btn btn-primary mb-2 mt-2"  data-toggle="modal"
-                                            data-target="#edit{{$p->id}}">
+                                        <button class="btn btn-warning mb-2 mt-2" data-toggle="modal"
+                                            data-target="#edit{{ $p->id }}">
                                             Edit
                                         </button>
-                                        <div class="modal fade" id="edit{{$p->id}}" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade" id="edit{{ $p->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -292,7 +299,8 @@
                                                         <form action="{{ URL::to('pengajuan/edit') }}" method="POST"
                                                             enctype='multipart/form-data'>
                                                             @csrf
-                                                            <input type="hidden" id="id" name="id" value="{{$p->id}}">
+                                                            <input type="hidden" id="id" name="id"
+                                                                value="{{ $p->id }}">
                                                             <div class="mb-2">
                                                                 <select class="form-select form-select-lg mb-3"
                                                                     aria-label=".form-select-lg example" name="kategori"
@@ -312,7 +320,7 @@
                                                                 <input class="form-control" name="dokumen_asyki"
                                                                     type="file" id="dokumen_asyki"
                                                                     accept="application/pdf"
-                                                                    value="{{ asset("storage/files/dok_asyki/$p->dokumen_asyki") }}" >
+                                                                    value="{{ asset("storage/files/dok_asyki/$p->dokumen_asyki") }}">
                                                             </div>
                                                             <div class="mb-2">
                                                                 <label for="formFile" class="form-label">Dokumen Tagihan
@@ -320,14 +328,14 @@
                                                                 <input class="form-control" name="dokumen_tagihanrs"
                                                                     type="file" id="dokumen_tagihanrs"
                                                                     accept="application/pdf"
-                                                                    value="{{ asset("storage/files/dok_tagihanrs/$p->dokumen_tagihanrs") }}" >
+                                                                    value="{{ asset("storage/files/dok_tagihanrs/$p->dokumen_tagihanrs") }}">
                                                             </div>
                                                             <div class="mb-2">
                                                                 <label for="formFile" class="form-label">Kartu Asuransi
                                                                     PNL</label>
                                                                 <input class="form-control" name="kartu_asuransi_pnl"
                                                                     type="file" id="kartu_asuransi_pnl"
-                                                                    accept="application/pdf" 
+                                                                    accept="application/pdf"
                                                                     value="{{ asset("storage/files/kartu_asuransi_pnl/$p->kartu_asuransi_pnl") }}">
                                                             </div>
                                                             <div class="mb-2">
@@ -335,14 +343,14 @@
                                                                     Medis</label>
                                                                 <input class="form-control" name="resume_medis"
                                                                     type="file" id="resume_medis"
-                                                                    accept="application/pdf" 
+                                                                    accept="application/pdf"
                                                                     value="{{ asset("storage/files/resume_medis/$p->resume_medis") }}">
                                                             </div>
                                                             <div class="mb-2">
                                                                 <label for="formFile" class="form-label">Hasil Lab</label>
                                                                 <input class="form-control" name="hasil_lab"
                                                                     type="file" id="hasil_lab"
-                                                                    accept="application/pdf" 
+                                                                    accept="application/pdf"
                                                                     value="{{ asset("storage/files/hasil_lab/$p->hasil_lab") }}">
                                                             </div>
                                                             <div class="mb-2">
@@ -367,16 +375,17 @@
                                             </div>
                                         </div>
 
-                                        <button class="btn btn-primary mb-2 mt-2"  data-toggle="modal"
-                                            data-target="#delete{{$p->id}}">
+                                        <button class="btn btn-danger mb-2 mt-2" data-toggle="modal"
+                                            data-target="#delete{{ $p->id }}">
                                             Delete
                                         </button>
-                                        <div class="modal fade" id="delete{{$p->id}}" tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade" id="delete{{ $p->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Apakah anda yakin menghapus data ini!!
+                                                        <h5 class="modal-title" id="exampleModalLabel">Apakah anda yakin
+                                                            menghapus data ini!!
                                                         </h5>
                                                         <button class="close" type="button" data-dismiss="modal"
                                                             aria-label="Close">
@@ -387,7 +396,8 @@
                                                         <form action="{{ URL::to('pengajuan/delete') }}" method="POST"
                                                             enctype='multipart/form-data'>
                                                             @csrf
-                                                            <input type="hidden" id="id" name="id" value="{{$p->id}}">
+                                                            <input type="hidden" id="id" name="id"
+                                                                value="{{ $p->id }}">
                                                             <input type="submit" class="btn btn-primary" id="submit"
                                                                 value="Submit">
                                                         </form>

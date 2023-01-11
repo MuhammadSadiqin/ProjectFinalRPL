@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function(){
     Route::post('pengajuan/diterima',[PengajuanAsuransiController::class,'diterima']);
     Route::post('pengajuan/edit',[PengajuanAsuransiController::class,'edit']);
     Route::post('pengajuan/delete',[PengajuanAsuransiController::class,'delete']);
+    Route::post('pengajuan/report',[PengajuanAsuransiController::class,'report']);
     
     
 });

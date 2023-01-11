@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\File;
 use Symfony\Component\Console\Input\Input;
+use Jimmyjs\ReportGenerator\ReportMedia\PdfReport;
 
 class PengajuanAsuransiController extends Controller
 {
@@ -23,7 +24,9 @@ class PengajuanAsuransiController extends Controller
             // mengirim data pegawai ke view index
         } elseif ((Auth::user()->role_id == 2)) {
             $Pengajuan = DB::table('pengajuan_asuransis')
-                ->where('user_id', Auth::id())->get();
+                ->join('mahasiswas', 'pengajuan_asuransis.user_id', '=', 'mahasiswas.user_id')
+                ->select('mahasiswas.nama', 'mahasiswas.nim', 'mahasiswas.prodi', 'mahasiswas.jurusan', 'pengajuan_asuransis.*')
+                ->where('pengajuan_asuransis.user_id', Auth::id())->get();
         }
         return view('pengajuan', ['Pengajuan' => $Pengajuan]);
     }
@@ -135,6 +138,7 @@ class PengajuanAsuransiController extends Controller
 
 
         $Pengajuan = PengajuanAsuransi::find($request->id);
+        $Pengajuan->nominal = '-';
         $Pengajuan->status = 'ditolak';
         $Pengajuan->dokumen_status = $filenameSimpan;
         $Pengajuan->save();
@@ -150,6 +154,7 @@ class PengajuanAsuransiController extends Controller
 
 
         $Pengajuan = PengajuanAsuransi::find($request->id);
+        $Pengajuan->nominal = $request->nominal;
         $Pengajuan->status = 'diterima';
         $Pengajuan->dokumen_status = $filenameSimpan;
         $Pengajuan->save();
@@ -214,7 +219,46 @@ class PengajuanAsuransiController extends Controller
     public function delete(Request $request)
     {
         $Pengajuan = PengajuanAsuransi::find($request->id)->delete();
-        
+
         return redirect('pengajuan');
+    }
+
+    public function report(Request $request)
+    {
+
+
+        $fromDate = $request->input('dari');
+        $toDate = $request->input('sampai');
+        $sortBy = "status";
+
+        $title = 'Registered User Report'; // Report title
+
+        $meta = [ // For displaying filters description on header
+            'Registered on' => $fromDate . ' To ' . $toDate,
+            'Sort By' => $sortBy
+        ];
+
+        $queryBuilder = PengajuanAsuransi::select(['kategori', 'user_id', 'created_at']) // Do some querying..
+            ->whereBetween('created_at', [$fromDate, $toDate])
+            ->orderBy($sortBy);
+
+        $columns = [ // Set Column to be displayed
+            'kategori' => 'kategori',
+            'created_at', // if no column_name specified, this will automatically seach for snake_case of column name (will be registered_at) column from query result
+            'nama' => 'user_id',
+        ];
+
+        // Generate Report with flexibility to manipulate column class even manipulate column value (using Carbon, etc).
+        $pdf = new PdfReport();
+        return $pdf->of($title, $meta, $queryBuilder, $columns)
+            ->editColumn('created_at', [ // Change column class or manipulate its data for displaying to report
+                'displayAs' => function ($result) {
+                    return $result->created_at->format('d M Y');
+                },
+                'class' => 'left'
+            ])
+            ->limit(20) // Limit record to be showed
+            ->stream(); // other available method: store('path/to/file.pdf') to save to disk, download('filename') to download pdf / make() that will producing DomPDF / SnappyPdf instance so you could do any other DomPDF / snappyPdf method such as stream() or download()
+
     }
 }
